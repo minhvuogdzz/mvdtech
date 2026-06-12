@@ -35,6 +35,7 @@ const satellitesData = [
   { lat: -10, lng: 60, alt: 0.32, name: 'Amazon', icon: '📦', type: 'ecom' },
   { lat: 45, lng: 90, alt: 0.34, name: 'YouTube', icon: '▶️', type: 'social' },
   { lat: HANOI.lat, lng: HANOI.lng, alt: 0.08, name: '🇻🇳 Hà Nội', icon: '📍', type: 'location' },
+  { lat: 0, lng: 0, alt: 1.2, name: 'ISS', icon: '🛰️', type: 'location' },
 ];
 
 const labelsData = [
@@ -67,8 +68,8 @@ const TechGlobe = memo(() => {
   useEffect(() => {
     const compute = () => {
       const w = window.innerWidth;
-      setCanvasW(Math.min(w, 1200));
-      setCanvasH(w < 480 ? 380 : w < 768 ? 450 : 550);
+      setCanvasW(w);
+      setCanvasH(window.innerHeight);
     };
     compute();
     window.addEventListener('resize', compute);
@@ -77,17 +78,18 @@ const TechGlobe = memo(() => {
 
   useEffect(() => {
     if (!globeRef.current || !globeReady) return;
-
     const controls = globeRef.current.controls();
-    controls.enableZoom = false;
+    const isMobile = window.innerWidth < 768;
+    controls.enableZoom = !isMobile;
+    controls.minDistance = 1.2;
+    controls.maxDistance = 5;
     controls.autoRotate = true;
     controls.autoRotateSpeed = 0.4;
     controls.enableDamping = true;
     controls.dampingFactor = 0.1;
     controls.rotateSpeed = 0.5;
 
-    const isMobile = window.innerWidth < 768;
-    globeRef.current.pointOfView({ lat: 15, lng: 105, altitude: isMobile ? 2.8 : 2.5 }, 1500);
+    globeRef.current.pointOfView({ lat: 15, lng: 105, altitude: isMobile ? 2.5 : 1.6 }, 1500);
 
     const renderer = globeRef.current.renderer();
     if (renderer) {
@@ -116,14 +118,13 @@ const TechGlobe = memo(() => {
   return (
     <section
       ref={containerRef}
-      className="relative w-full flex flex-col items-center justify-center"
+      className="relative w-full flex flex-col items-center justify-center overflow-hidden"
       style={{
-        minHeight: '80vh',
-        background: 'radial-gradient(ellipse at center, rgba(37,99,235,0.08) 0%, transparent 60%)',
-        overflowX: 'clip',
+        height: '100vh',
+        background: 'transparent',
       }}
     >
-      <div className="relative z-10 text-center px-4 pt-16 pb-4">
+      <div className="absolute top-16 left-0 right-0 z-10 text-center px-4 pointer-events-none">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -145,8 +146,7 @@ const TechGlobe = memo(() => {
       </div>
 
       <div
-        className="relative w-full flex items-center justify-center cursor-grab active:cursor-grabbing"
-        style={{ height: canvasH }}
+        className="absolute inset-0 w-full flex items-center justify-center cursor-grab active:cursor-grabbing"
       >
         {isVisible && (
           <React.Suspense fallback={
@@ -161,6 +161,7 @@ const TechGlobe = memo(() => {
               onGlobeReady={handleGlobeReady}
               globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
               bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
+              backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"
               backgroundColor="rgba(0,0,0,0)"
               atmosphereColor="rgba(100,180,255,0.4)"
               atmosphereAltitude={0.2}
@@ -195,7 +196,7 @@ const TechGlobe = memo(() => {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ delay: 0.4 }}
-        className="relative z-10 flex flex-wrap justify-center gap-3 px-4 pb-16 pt-4 max-w-3xl mx-auto"
+        className="absolute bottom-8 left-0 right-0 z-10 flex flex-wrap justify-center gap-3 px-4 max-w-3xl mx-auto pointer-events-none"
       >
         {['AI', 'Blockchain', 'Cloud', 'IoT', '5G', 'Big Data', 'VR/AR', 'Cybersecurity'].map((tech) => (
           <span

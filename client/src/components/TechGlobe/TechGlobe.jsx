@@ -67,9 +67,10 @@ const TechGlobe = memo(() => {
 
   useEffect(() => {
     const compute = () => {
-      if (!containerRef.current) return;
-      setCanvasW(containerRef.current.clientWidth);
-      setCanvasH(containerRef.current.clientHeight);
+      const w = window.innerWidth;
+      const h = window.innerHeight * 0.8;
+      setCanvasW(w);
+      setCanvasH(Math.max(500, Math.min(h, 700)));
     };
     compute();
     window.addEventListener('resize', compute);

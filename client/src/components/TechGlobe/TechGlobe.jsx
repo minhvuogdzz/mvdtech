@@ -35,7 +35,7 @@ const satellitesData = [
   { lat: -10, lng: 60, alt: 0.32, name: 'Amazon', icon: '📦', type: 'ecom' },
   { lat: 45, lng: 90, alt: 0.34, name: 'YouTube', icon: '▶️', type: 'social' },
   { lat: HANOI.lat, lng: HANOI.lng, alt: 0.08, name: '🇻🇳 Hà Nội', icon: '📍', type: 'location' },
-  { lat: 0, lng: 0, alt: 1.2, name: 'ISS', icon: '🛰️', type: 'location' },
+  { lat: 25, lng: -45, alt: 0.6, name: 'ISS', icon: '🛰️', type: 'location' },
 ];
 
 const labelsData = [
@@ -81,8 +81,8 @@ const TechGlobe = memo(() => {
     const controls = globeRef.current.controls();
     const isMobile = window.innerWidth < 768;
     controls.enableZoom = !isMobile;
-    controls.minDistance = 1.2;
-    controls.maxDistance = 5;
+    controls.minDistance = 1.3;
+    controls.maxDistance = 3.5;
     controls.autoRotate = true;
     controls.autoRotateSpeed = 0.4;
     controls.enableDamping = true;
@@ -120,11 +120,19 @@ const TechGlobe = memo(() => {
       ref={containerRef}
       className="relative w-full flex flex-col items-center justify-center overflow-hidden"
       style={{
-        height: '100vh',
-        background: 'transparent',
+        height: '90vh',
+        minHeight: '600px',
+        maxHeight: '900px',
+        background: 'radial-gradient(ellipse at center, rgba(37,99,235,0.1) 0%, #050510 100%)',
       }}
     >
-      <div className="absolute top-16 left-0 right-0 z-10 text-center px-4 pointer-events-none">
+      {/* CSS Stars Background */}
+      <div className="absolute inset-0 z-0 opacity-50" style={{
+        backgroundImage: 'radial-gradient(1px 1px at 20px 30px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 40px 70px, #ffffff, rgba(0,0,0,0)), radial-gradient(1px 1px at 50px 160px, #ffffff, rgba(0,0,0,0)), radial-gradient(1.5px 1.5px at 90px 40px, #ffffff, rgba(0,0,0,0)), radial-gradient(2px 2px at 130px 80px, #ffffff, rgba(0,0,0,0))',
+        backgroundSize: '200px 200px',
+      }}></div>
+
+      <div className="absolute top-12 left-0 right-0 z-10 text-center px-4 pointer-events-none">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -161,7 +169,6 @@ const TechGlobe = memo(() => {
               onGlobeReady={handleGlobeReady}
               globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
               bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
-              backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"
               backgroundColor="rgba(0,0,0,0)"
               atmosphereColor="rgba(100,180,255,0.4)"
               atmosphereAltitude={0.2}

@@ -144,6 +144,11 @@ app.get('/api/visitors', async (req, res) => {
   }
 });
 
+// Ping route for Render keep-alive
+app.get('/api/ping', (req, res) => {
+  res.status(200).send('pong');
+});
+
 // Ping (keep alive)
 app.get('/api/ping', (req, res) => res.status(200).send('pong'));
 

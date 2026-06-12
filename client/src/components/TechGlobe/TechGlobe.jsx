@@ -67,20 +67,27 @@ const TechGlobe = memo(() => {
 
   useEffect(() => {
     const compute = () => {
-      const w = window.innerWidth;
-      setCanvasW(w);
-      setCanvasH(window.innerHeight);
+      if (!containerRef.current) return;
+      setCanvasW(containerRef.current.clientWidth);
+      setCanvasH(containerRef.current.clientHeight);
     };
     compute();
     window.addEventListener('resize', compute);
     return () => window.removeEventListener('resize', compute);
   }, []);
 
+  const handleZoom = useCallback((direction) => {
+    if (!globeRef.current) return;
+    const currentAltitude = globeRef.current.pointOfView().altitude;
+    let newAltitude = direction === 'in' ? currentAltitude - 0.4 : currentAltitude + 0.4;
+    newAltitude = Math.max(1.3, Math.min(newAltitude, 3.5));
+    globeRef.current.pointOfView({ altitude: newAltitude }, 500);
+  }, []);
+
   useEffect(() => {
     if (!globeRef.current || !globeReady) return;
     const controls = globeRef.current.controls();
-    const isMobile = window.innerWidth < 768;
-    controls.enableZoom = !isMobile;
+    controls.enableZoom = false; // Tắt zoom chuột theo yêu cầu
     controls.minDistance = 1.3;
     controls.maxDistance = 3.5;
     controls.autoRotate = true;
@@ -118,11 +125,11 @@ const TechGlobe = memo(() => {
   return (
     <section
       ref={containerRef}
-      className="relative w-full flex flex-col items-center justify-center overflow-hidden"
+      className="relative w-full flex flex-col items-center justify-center overflow-hidden rounded-b-[2.5rem]"
       style={{
-        height: '90vh',
-        minHeight: '600px',
-        maxHeight: '900px',
+        height: '80vh',
+        minHeight: '500px',
+        maxHeight: '700px',
         background: 'radial-gradient(ellipse at center, rgba(37,99,235,0.1) 0%, #050510 100%)',
       }}
     >
@@ -196,6 +203,15 @@ const TechGlobe = memo(() => {
             />
           </React.Suspense>
         )}
+      </div>
+
+      <div className="absolute right-4 bottom-24 flex flex-col gap-2 z-20">
+        <button onClick={() => handleZoom('in')} className="w-10 h-10 rounded-full bg-blue-600/30 hover:bg-blue-600/60 backdrop-blur-md text-white flex items-center justify-center text-xl font-bold border border-blue-400/30 transition-colors shadow-[0_0_15px_rgba(37,99,235,0.3)]">
+          +
+        </button>
+        <button onClick={() => handleZoom('out')} className="w-10 h-10 rounded-full bg-blue-600/30 hover:bg-blue-600/60 backdrop-blur-md text-white flex items-center justify-center text-xl font-bold border border-blue-400/30 transition-colors shadow-[0_0_15px_rgba(37,99,235,0.3)]">
+          -
+        </button>
       </div>
 
       <motion.div

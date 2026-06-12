@@ -176,8 +176,8 @@ const TechGlobe = memo(() => {
               width={canvasW}
               height={canvasH}
               onGlobeReady={handleGlobeReady}
-              globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
-              bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
+              globeImageUrl="https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+              bumpImageUrl="https://unpkg.com/three-globe/example/img/earth-topology.png"
               backgroundColor="rgba(0,0,0,0)"
               atmosphereColor="rgba(100,180,255,0.4)"
               atmosphereAltitude={0.2}

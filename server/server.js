@@ -118,6 +118,7 @@ io.on('connection', async (socket) => {
 });
 
 // Middlewares
+app.set('trust proxy', 1); // Trust first proxy (Render/Vercel) to fix rate-limit IP tracking
 app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '10mb' }));

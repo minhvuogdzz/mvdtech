@@ -96,6 +96,7 @@ const TechGlobe = memo(() => {
     controls.dampingFactor = 0.1;
     controls.rotateSpeed = 0.5;
 
+    const isMobile = window.innerWidth < 768;
     globeRef.current.pointOfView({ lat: 15, lng: 105, altitude: isMobile ? 2.5 : 1.6 }, 1500);
 
     const renderer = globeRef.current.renderer();
